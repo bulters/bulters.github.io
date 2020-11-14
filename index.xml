@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>bulters.dev</title>
+    <link>https://bulters.dev/</link>
+    <description>Recent content on bulters.dev</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 15 Nov 2020 00:04:41 +0100</lastBuildDate><atom:link href="https://bulters.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Advent of Code in Haskell: T Minus 16</title>
+      <link>https://bulters.dev/posts/t-minus-16/</link>
+      <pubDate>Sun, 15 Nov 2020 00:04:41 +0100</pubDate>
+      
+      <guid>https://bulters.dev/posts/t-minus-16/</guid>
+      <description>Introduction For the past few years I&amp;rsquo;ve been trying to learn haskell in various ways but have never been able to stick to the method, let alone actually &amp;ldquo;become productive&amp;rdquo; in Haskell.
+Since I&amp;rsquo;ve decided to spent more time on tinkering during the evenings, I thought it would be a nice idea to document my learning process.
+The general idea is that I will do the challenges from the Advent of Code (2019 edition) and implement them in Haskell.</description>
+    </item>
+    
+  </channel>
+</rss>

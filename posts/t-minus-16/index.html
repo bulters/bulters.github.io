@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Advent of Code in Haskell: T Minus 16 - bulters.dev</title><meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta property="og:description" content="" />
+	<meta name="twitter:description" content="" />
+	<meta name="description" content="" />
+	<meta name="description" content="" />
+
+	<meta property="og:title" content="Advent of Code in Haskell: T Minus 16 | bulters.dev" />
+	<meta name="twitter:title" content="Advent of Code in Haskell: T Minus 16 | bulters.dev" />
+
+	<meta property="og:image" content=""/>
+	<meta itemprop="name" content="Advent of Code in Haskell: T Minus 16 | bulters.dev" />
+	<meta name="application-name" content="Advent of Code in Haskell: T Minus 16 | bulters.dev" />
+	<meta property="og:site_name" content="" />
+	<meta property="og:title" content="Advent of Code in Haskell: T Minus 16" />
+<meta property="og:description" content="Introduction For the past few years I&rsquo;ve been trying to learn haskell in various ways but have never been able to stick to the method, let alone actually &ldquo;become productive&rdquo; in Haskell.
+Since I&rsquo;ve decided to spent more time on tinkering during the evenings, I thought it would be a nice idea to document my learning process.
+The general idea is that I will do the challenges from the Advent of Code (2019 edition) and implement them in Haskell." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bulters.dev/posts/t-minus-16/" />
+<meta property="article:published_time" content="2020-11-15T00:04:41+01:00" />
+<meta property="article:modified_time" content="2020-11-15T00:04:41+01:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Advent of Code in Haskell: T Minus 16"/>
+<meta name="twitter:description" content="Introduction For the past few years I&rsquo;ve been trying to learn haskell in various ways but have never been able to stick to the method, let alone actually &ldquo;become productive&rdquo; in Haskell.
+Since I&rsquo;ve decided to spent more time on tinkering during the evenings, I thought it would be a nice idea to document my learning process.
+The general idea is that I will do the challenges from the Advent of Code (2019 edition) and implement them in Haskell."/>
+<script src="https://bulters.dev/js/feather.min.js"></script>
+	
+	<link href="https://bulters.dev/css/fonts.css" rel="stylesheet">
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://bulters.dev/css/main.css" />
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://bulters.dev/">bulters.dev</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		<a href="/tags">Tags</a>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Advent of Code in Haskell: T Minus 16</h1>
+			<div class="meta">Posted on Nov 15, 2020</div>
+		</div>
+		
+
+		<section class="body">
+			<h1 id="introduction">Introduction</h1>
+<p>For the past few years I&rsquo;ve been trying to learn haskell in various ways but
+have never been able to stick to the method, let alone actually &ldquo;become productive&rdquo;
+in Haskell.</p>
+<p>Since I&rsquo;ve decided to spent more time on tinkering during the evenings, I thought
+it would be a nice idea to document my learning process.</p>
+<p>The general idea is that I will do the challenges from the Advent of Code (2019 edition)
+and implement them in Haskell. The documentation part will not really involve the learning
+of the language itself, but more on &ldquo;everything ephemeral&rdquo; (the plumbing?).</p>
+<p>I&rsquo;m convinced that Haskell in itself is quite an easy language to grasp (once you manage
+to get &ldquo;some functional programming practices to click&rdquo;), but that there are a number
+of barriers that prevent people from becoming productive in it.</p>
+<h1 id="getting-setup">Getting setup</h1>
+<p>During this attempt to grasp Haskell I will be working on my Windows 10 laptop under WSL2
+running an Ubuntu 20.04 installation. My notes will assume that a sort of sane setup for
+an editor is available.</p>
+<p>&ndash; todo: insert notes to editor setup guides</p>
+<p>To get started I installed the GHC compiler through the default Ubuntu package manager:</p>
+<pre><code>&gt; sudo apt-get install ghc
+</code></pre>
+<p>And then verified that installation has succeeded by running</p>
+<pre><code>&gt; ghci --version
+The Glorious Glasgow Haskell Compilation System, version 8.6.5
+&gt; ghc --version
+The Glorious Glasgow Haskell Compilation System, version 8.6.5
+&gt; cabal --version
+cabal-install version 2.4.0.0
+compiled using version 2.4.0.1 of the Cabal library
+</code></pre>
+<p>This ensured that all binaries are properly available (in path) to get going.</p>
+<h1 id="the-advent-of-code">The Advent of Code</h1>
+<p>For those who do not know, The Advent of Code (TAOC) is a yearly event in which 50 programming
+assignments are made available during the first 25 days of december, outlining a glorious story
+usually involving santa, elves, presents and the (not so) daily challenges they face.</p>
+<p>Every day two programming challenges are presented that take a certain input (your daily input file)
+and require you to do StuffTM with that input to accomplish a certain task. Don&rsquo;t worry, it will all
+become clear when you actually try this.</p>
+<p>You can register on <a href="https://www.theadventofcode.com">https://www.theadventofcode.com</a>.</p>
+<h1 id="kicking-the-tires-day-1">Kicking the tires, day 1</h1>
+<p>With the environment setup I create a fresh directory for the first day:</p>
+<pre><code>&gt; mkdir -p taoc19/day1
+</code></pre>
+<p>and paste my input for the first challenge into taoc19/day1/input.txt</p>
+<p>Since I&rsquo;m not trying to do anything fancy right now, I create a new cabal package with the <code>cabal init</code> command.
+During the interrogation cabal gives me, I stick with the defaults, except when asked whether I&rsquo;m building a package
+or executable, in which I choose &lsquo;executable&rsquo;.</p>
+<p>This gives me a few files that I can use to start building.</p>
+<p>To start the process I need to get my data from the input.txt file into a function. Since I&rsquo;ve read something about
+Haskell before (and some quick googling) I try using the readFile function (from the stdlib/Prelude) in my main do-block.</p>
+<pre><code>module Main where
+
+main :: IO ()
+main = do
+        raw &lt;- readFile &quot;input.txt&quot;
+        print raw
+</code></pre><p>when loading this file in GHCi and running main, it nicely outputs my input data. First win achieved!</p>
+<p>Step two involves splitting up the input into lines and converting these lines into an array of integers.</p>
+<p>To accomplish the first step, Haskell has a handy function <code>lines</code> (in the Prelude) available. The second part
+involves the <code>read</code> function (also a Prelude thing) and specifying the type of the statement. Initially I created
+a separate function <code>stoi</code> for this</p>
+<pre><code>stoi :: String -&gt; Int
+stoi = rread
+</code></pre><p>but decided that &ldquo;casting&rdquo; the data inline would still be perfectly readable (and perhaps even clearer), resulting
+in:</p>
+<pre><code>module Main where
+
+main :: IO ()
+main = do
+        raw &lt;- readFile &quot;input.txt&quot;
+
+        -- since lines does not take an IO &lt;something&gt; but a regular String
+        -- we do not use the do ... &lt;- syntax here, but put it in a variable
+        -- directly.
+        let ls = lines raw
+
+        -- we want to have an [Int], so map the read function over the lines.
+        let nums = map read ls :: [Int]
+
+        print nums
+</code></pre><p>Achievement 2 unlucked, I&rsquo;m finally ready to do something with my data.</p>
+<p>Part 1 of the challenge involves calculating how much fuel we need according to a certain formula, so for every
+input we apply a function to it, and sum the results.o</p>
+<pre><code>module Main where
+
+fuelRequired :: Int -&gt; Int
+fuelRequired = id -- todo
+
+main :: IO ()
+main = do
+        raw &lt;- readFile &quot;input.txt&quot;
+
+        -- since lines does not take an IO &lt;something&gt; but a regular String
+        -- we do not use the do ... &lt;- syntax here, but put it in a variable
+        -- directly.
+        let ls = lines raw
+
+        -- we want to have an [Int], so map the read function over the lines.
+        let nums = map read ls :: [Int]
+
+        -- apply the fuelRequired function to all the inputs and sum the result
+        let totalFuel = sum $ map fuelRequired nums
+        print totalFuel
+</code></pre><p>which if we load it into GHCi gives us the sum of all the weights.</p>
+<pre><code>*Main&gt; :edit
+[1 of 1] Compiling Main             ( Main.hs, interpreted )
+Ok, one module loaded.
+*Main&gt; main
+9961383
+*Main&gt;
+</code></pre><p>The actual calculation of required fuel involves dividing the weight by 3, rounding it down and subtracting 2, giving
+me a really simple to implement fuelRequired function.</p>
+<pre><code>-- fuelRequired should be the mass x, divided by 3, minus 2
+-- with a minimum of 0.
+fuelRequired :: Int -&gt; Int
+fuelRequired x = max 0 $ (div x 3) - 2
+</code></pre><p>Running the main file in GHCi again (after reloading the Main.hs file) gives me a number that, when entered in the answer
+field on AOC tells me I&rsquo;m on the right track! Yay!</p>
+<h1 id="day-1-part-2">Day 1, part 2</h1>
+<p>Oh, surprise, physics kicks in. Turns out, fuel weighs something as well, so we&rsquo;ll have to calculate the amount of fuel required
+to carry the fuel, which also requires fuel to carry, etc.</p>
+<p>This looks like a typically recursive situation where fuel that requires no fuel (i.e. weighing 9 or less) serves as a perfect
+termination case. Let&rsquo;s try to write this as a recursive function with a guard in it.</p>
+<pre><code>-- recursiveFuelRequired is implemented as a recursive function
+-- where we terminate recursion as soon as there is no more
+-- fuel required for a certain component.
+recursiveFuelRequired x
+        | x == 0    = 0
+        | otherwise = let thisFuel = fuelRequired x in
+                        thisFuel + recursiveFuelRequired thisFuel
+</code></pre><p>and then calculating the actual total fuel required in the same way as before, but now with this new recursive function:</p>
+<pre><code>let totalFuel = sum $ map recursiveFuelRequired nums
+print totalFuel
+</code></pre><p>output copy-paste into solution field, press submit, and&hellip; GREAT SUCCESS!</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+<hr><a class="soc" href="https://github.com/bulters" title="GitHub"><i data-feather="github"></i></a>|<a class="soc" href="https://twitter.com/bulters/" title="Twitter"><i data-feather="twitter"></i></a>|⚡️
+	2020  <a href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+</footer>
+
+
+<script>
+      feather.replace()
+</script></div>
+    </body>
+</html>
