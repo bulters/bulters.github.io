@@ -78,7 +78,10 @@ of barriers that prevent people from becoming productive in it.</p>
 <p>During this attempt to grasp Haskell I will be working on my Windows 10 laptop under WSL2
 running an Ubuntu 20.04 installation. My notes will assume that a sort of sane setup for
 an editor is available.</p>
-<p>&ndash; todo: insert notes to editor setup guides</p>
+<p>I use vim myself, with a fairly minimal vimrc (no haskell specific configuration) and the
+following packages:</p>
+<pre><code>ale/ coc.nvim/ fzf/ ultisnips/ vim-go/ vim-repeat/ vim-surround/ vim-vinegar/
+</code></pre>
 <p>To get started I installed the GHC compiler through the default Ubuntu package manager:</p>
 <pre><code>&gt; sudo apt-get install ghc
 </code></pre>
@@ -110,15 +113,25 @@ During the interrogation cabal gives me, I stick with the defaults, except when 
 or executable, in which I choose &lsquo;executable&rsquo;.</p>
 <p>This gives me a few files that I can use to start building.</p>
 <p>To start the process I need to get my data from the input.txt file into a function. Since I&rsquo;ve read something about
-Haskell before (and some quick googling) I try using the readFile function (from the stdlib/Prelude) in my main do-block.</p>
+Haskell before (and some quick googling) I try using the readFile function (from the stdlib/Prelude) in GHCi and voila:</p>
+<pre><code>
+</code></pre><p>The problem arises when I put the <code>let raw = readFile 'input.txt'</code> line in my main do-block. Haskell has this
+notorious Monad thing going on, which I do not yet fully grasp. But you don&rsquo;t need to understand it to use
+it, so a small Google session quickly led to the insight that I need to &ldquo;reverse arrow put&rdquo; the result of
+the <code>readFile</code> call into a variable instead of using <code>let</code>. This leads to a really minimal Main.hs file</p>
 <pre><code>module Main where
 
 main :: IO ()
 main = do
         raw &lt;- readFile &quot;input.txt&quot;
         print raw
-</code></pre><p>when loading this file in GHCi and running main, it nicely outputs my input data. First win achieved!</p>
-<p>Step two involves splitting up the input into lines and converting these lines into an array of integers.</p>
+</code></pre><p>when loadng it into GHCi and running main, it nicely outputs my input data. First win achieved!</p>
+<pre><code>Prelude&gt; :l Main.hs
+[1 of 1] Compiling Main             ( Main.hs, interpreted )
+Ok, one module loaded.
+*Main&gt; main
+&lt;your data here&gt;
+</code></pre><p>Step two involves splitting up the input into lines and converting these lines into an array of integers.</p>
 <p>To accomplish the first step, Haskell has a handy function <code>lines</code> (in the Prelude) available. The second part
 involves the <code>read</code> function (also a Prelude thing) and specifying the type of the statement. Initially I created
 a separate function <code>stoi</code> for this</p>
