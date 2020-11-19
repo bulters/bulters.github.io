@@ -86,22 +86,19 @@ under WSL2 running an Ubuntu 20.04 installation. My notes will assume that a
 sort of sane setup for an editor is available.</p>
 <p>I use vim myself, with a fairly minimal vimrc (no haskell specific
 configuration) and the following packages:</p>
-<pre><code>ale/ coc.nvim/ fzf/ ultisnips/ vim-go/ vim-repeat/ vim-surround/ vim-vinegar/
-</code></pre>
-<p>To get started I installed the GHC compiler through the default Ubuntu package
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ale/ coc.nvim/ fzf/ ultisnips/ vim-go/ vim-repeat/ vim-surround/ vim-vinegar/
+</code></pre></div><p>To get started I installed the GHC compiler through the default Ubuntu package
 manager:</p>
-<pre><code>&gt; sudo apt-get install ghc
-</code></pre>
-<p>And then verified that installation has succeeded by running</p>
-<pre><code>&gt; ghci --version
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo apt-get install ghc
+</code></pre></div><p>And then verified that installation has succeeded by running</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">&gt; ghci --version
 The Glorious Glasgow Haskell Compilation System, version 8.6.5
 &gt; ghc --version
 The Glorious Glasgow Haskell Compilation System, version 8.6.5
 &gt; cabal --version
 cabal-install version 2.4.0.0
 compiled using version 2.4.0.1 of the Cabal library
-</code></pre>
-<p>This ensured that all binaries are properly available (in path) to get going.</p>
+</code></pre></div><p>This ensured that all binaries are properly available (in path) to get going.</p>
 <h1 id="the-advent-of-code">The Advent of Code</h1>
 <p>For those who do not know, The Advent of Code (TAOC) is a yearly event in which
 50 programming assignments are made available during the first 25 days of
@@ -111,12 +108,11 @@ and the (not so) daily challenges they face.</p>
 (your daily input file) and require you to do StuffTM with that input to
 accomplish a certain task. Don&rsquo;t worry, it will all become clear when you
 actually try this.</p>
-<p>You can register on <a href="https://www.theadventofcode.com">https://www.theadventofcode.com</a>.</p>
+<p>You can register on <a href="https://adventofcode.com">https://adventofcode.com</a>.</p>
 <h1 id="kicking-the-tires-day-1">Kicking the tires, day 1</h1>
 <p>With the environment setup I create a fresh directory for the first day:</p>
-<pre><code>&gt; mkdir -p taoc19/day1
-</code></pre>
-<p>and paste my input for the first challenge into taoc19/day1/input.txt</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">mkdir -p taoc19/day1
+</code></pre></div><p>and paste my input for the first challenge into taoc19/day1/input.txt</p>
 <p>Since I&rsquo;m not trying to do anything fancy right now, I create a new cabal
 package with the <code>cabal init</code> command.  During the interrogation cabal gives
 me, I stick with the defaults, except when asked whether I&rsquo;m building a package
@@ -126,90 +122,90 @@ or executable, in which I choose &lsquo;executable&rsquo;.</p>
 function. Since I&rsquo;ve read something about Haskell before (and some quick
 googling) I try using the readFile function (from the stdlib/Prelude) in GHCi
 and voila:</p>
-<pre><code>let raw = readFile &quot;input.txt&quot;
-</code></pre><p>The problem arises when I put the <code>let raw = readFile 'input.txt'</code> line in my
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">let</span> raw <span style="color:#f92672">=</span> readFile <span style="color:#e6db74">&#34;input.txt&#34;</span>
+</code></pre></div><p>The problem arises when I put the <code>let raw = readFile 'input.txt'</code> line in my
 main do-block. Haskell has this notorious Monad thing going on, which I do not
 yet fully grasp. But you don&rsquo;t need to understand it to use it, so a small
 Google session quickly led to the insight that I need to &ldquo;reverse arrow put&rdquo;
 the result of the <code>readFile</code> call into a variable instead of using <code>let</code>. This
 leads to a really minimal Main.hs file</p>
-<pre><code>module Main where
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">module</span> Main <span style="color:#66d9ef">where</span>
 
-main :: IO ()
-main = do
-        raw &lt;- readFile &quot;input.txt&quot;
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+        raw <span style="color:#f92672">&lt;-</span> readFile <span style="color:#e6db74">&#34;input.txt&#34;</span>
         print raw
-</code></pre><p>when loadng it into GHCi and running main, it nicely outputs my input data.
+</code></pre></div><p>when loadng it into GHCi and running main, it nicely outputs my input data.
 First win achieved!</p>
-<pre><code>Prelude&gt; :l Main.hs
-[1 of 1] Compiling Main             ( Main.hs, interpreted )
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">Prelude&gt; :l Main.hs
+<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span> of 1<span style="color:#f92672">]</span> Compiling Main             <span style="color:#f92672">(</span> Main.hs, interpreted <span style="color:#f92672">)</span>
 Ok, one module loaded.
 *Main&gt; main
 &lt;your data here&gt;
-</code></pre><p>Step two involves splitting up the input into lines and converting these lines
+</code></pre></div><p>Step two involves splitting up the input into lines and converting these lines
 into an array of integers.</p>
 <p>To accomplish the first step, Haskell has a handy function <code>lines</code> (in the
 Prelude) available. The second part involves the <code>read</code> function (also a
 Prelude thing) and specifying the type of the statement. Initially I created a
 separate function <code>stoi</code> for this</p>
-<pre><code>stoi :: String -&gt; Int
-stoi = rread
-</code></pre><p>but decided that &ldquo;casting&rdquo; the data inline would still be perfectly readable
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#a6e22e">stoi</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">String</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Int</span>
+<span style="color:#a6e22e">stoi</span> <span style="color:#f92672">=</span> rread
+</code></pre></div><p>but decided that &ldquo;casting&rdquo; the data inline would still be perfectly readable
 (and perhaps even clearer), resulting in:</p>
-<pre><code>module Main where
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">module</span> Main <span style="color:#66d9ef">where</span>
 
-main :: IO ()
-main = do
-        raw &lt;- readFile &quot;input.txt&quot;
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+        raw <span style="color:#f92672">&lt;-</span> readFile <span style="color:#e6db74">&#34;input.txt&#34;</span>
 
-        -- since lines does not take an IO &lt;something&gt; but a regular String
-        -- we do not use the do ... &lt;- syntax here, but put it in a variable
-        -- directly.
-        let ls = lines raw
+        <span style="color:#75715e">-- since lines does not take an IO &lt;something&gt; but a regular String</span>
+        <span style="color:#75715e">-- we do not use the do ... &lt;- syntax here, but put it in a variable</span>
+        <span style="color:#75715e">-- directly.</span>
+        <span style="color:#66d9ef">let</span> ls <span style="color:#f92672">=</span> lines raw
 
-        -- we want to have an [Int], so map the read function over the lines.
-        let nums = map read ls :: [Int]
+        <span style="color:#75715e">-- we want to have an [Int], so map the read function over the lines.</span>
+        <span style="color:#66d9ef">let</span> nums <span style="color:#f92672">=</span> map read ls <span style="color:#f92672">::</span> [<span style="color:#66d9ef">Int</span>]
 
         print nums
-</code></pre><p>Achievement 2 unlucked, I&rsquo;m finally ready to do something with my data.</p>
+</code></pre></div><p>Achievement 2 unlucked, I&rsquo;m finally ready to do something with my data.</p>
 <p>Part 1 of the challenge involves calculating how much fuel we need according to
 a certain formula, so for every input we apply a function to it, and sum the
 results.o</p>
-<pre><code>module Main where
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">module</span> Main <span style="color:#66d9ef">where</span>
 
-fuelRequired :: Int -&gt; Int
-fuelRequired = id -- todo
+<span style="color:#a6e22e">fuelRequired</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Int</span>
+<span style="color:#a6e22e">fuelRequired</span> <span style="color:#f92672">=</span> id <span style="color:#75715e">-- todo</span>
 
-main :: IO ()
-main = do
-        raw &lt;- readFile &quot;input.txt&quot;
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+        raw <span style="color:#f92672">&lt;-</span> readFile <span style="color:#e6db74">&#34;input.txt&#34;</span>
 
-        -- since lines does not take an IO &lt;something&gt; but a regular String
-        -- we do not use the do ... &lt;- syntax here, but put it in a variable
-        -- directly.
-        let ls = lines raw
+        <span style="color:#75715e">-- since lines does not take an IO &lt;something&gt; but a regular String</span>
+        <span style="color:#75715e">-- we do not use the do ... &lt;- syntax here, but put it in a variable</span>
+        <span style="color:#75715e">-- directly.</span>
+        <span style="color:#66d9ef">let</span> ls <span style="color:#f92672">=</span> lines raw
 
-        -- we want to have an [Int], so map the read function over the lines.
-        let nums = map read ls :: [Int]
+        <span style="color:#75715e">-- we want to have an [Int], so map the read function over the lines.</span>
+        <span style="color:#66d9ef">let</span> nums <span style="color:#f92672">=</span> map read ls <span style="color:#f92672">::</span> [<span style="color:#66d9ef">Int</span>]
 
-        -- apply the fuelRequired function to all the inputs and sum the result
-        let totalFuel = sum $ map fuelRequired nums
+        <span style="color:#75715e">-- apply the fuelRequired function to all the inputs and sum the result</span>
+        <span style="color:#66d9ef">let</span> totalFuel <span style="color:#f92672">=</span> sum <span style="color:#f92672">$</span> map fuelRequired nums
         print totalFuel
-</code></pre><p>which if we load it into GHCi gives us the sum of all the weights.</p>
-<pre><code>*Main&gt; :edit
-[1 of 1] Compiling Main             ( Main.hs, interpreted )
+</code></pre></div><p>which if we load it into GHCi gives us the sum of all the weights.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">*Main&gt; :edit
+<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span> of 1<span style="color:#f92672">]</span> Compiling Main             <span style="color:#f92672">(</span> Main.hs, interpreted <span style="color:#f92672">)</span>
 Ok, one module loaded.
 *Main&gt; main
-9961383
+<span style="color:#ae81ff">9961383</span>
 *Main&gt;
-</code></pre><p>The actual calculation of required fuel involves dividing the weight by 3,
+</code></pre></div><p>The actual calculation of required fuel involves dividing the weight by 3,
 rounding it down and subtracting 2, giving me a really simple to implement
 fuelRequired function.</p>
-<pre><code>-- fuelRequired should be the mass x, divided by 3, minus 2
--- with a minimum of 0.
-fuelRequired :: Int -&gt; Int
-fuelRequired x = max 0 $ (div x 3) - 2
-</code></pre><p>Running the main file in GHCi again (after reloading the Main.hs file) gives me
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">-- fuelRequired should be the mass x, divided by 3, minus 2</span>
+<span style="color:#75715e">-- with a minimum of 0.</span>
+<span style="color:#a6e22e">fuelRequired</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Int</span>
+<span style="color:#a6e22e">fuelRequired</span> x <span style="color:#f92672">=</span> max <span style="color:#ae81ff">0</span> <span style="color:#f92672">$</span> (div x <span style="color:#ae81ff">3</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span>
+</code></pre></div><p>Running the main file in GHCi again (after reloading the Main.hs file) gives me
 a number that, when entered in the answer field on AOC tells me I&rsquo;m on the
 right track! Yay!</p>
 <h1 id="day-1-part-2">Day 1, part 2</h1>
@@ -219,18 +215,18 @@ also requires fuel to carry, etc.</p>
 <p>This looks like a typically recursive situation where fuel that requires no
 fuel (i.e. weighing 9 or less) serves as a perfect termination case. Let&rsquo;s try
 to write this as a recursive function with a guard in it.</p>
-<pre><code>-- recursiveFuelRequired is implemented as a recursive function
--- where we terminate recursion as soon as there is no more
--- fuel required for a certain component.
-recursiveFuelRequired x
-        | x == 0    = 0
-        | otherwise = let thisFuel = fuelRequired x in
-                        thisFuel + recursiveFuelRequired thisFuel
-</code></pre><p>and then calculating the actual total fuel required in the same way as before,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">-- recursiveFuelRequired is implemented as a recursive function</span>
+<span style="color:#75715e">-- where we terminate recursion as soon as there is no more</span>
+<span style="color:#75715e">-- fuel required for a certain component.</span>
+<span style="color:#a6e22e">recursiveFuelRequired</span> x
+        <span style="color:#f92672">|</span> x <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>    <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        <span style="color:#f92672">|</span> otherwise <span style="color:#f92672">=</span> <span style="color:#66d9ef">let</span> thisFuel <span style="color:#f92672">=</span> fuelRequired x <span style="color:#66d9ef">in</span>
+                        thisFuel <span style="color:#f92672">+</span> recursiveFuelRequired thisFuel
+</code></pre></div><p>and then calculating the actual total fuel required in the same way as before,
 but now with this new recursive function:</p>
-<pre><code>let totalFuel = sum $ map recursiveFuelRequired nums
-print totalFuel
-</code></pre><p>output copy-paste into solution field, press submit, and&hellip; GREAT SUCCESS!</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">let</span> totalFuel <span style="color:#f92672">=</span> sum <span style="color:#f92672">$</span> map recursiveFuelRequired nums
+<span style="color:#a6e22e">print</span> totalFuel
+</code></pre></div><p>output copy-paste into solution field, press submit, and&hellip; GREAT SUCCESS!</p>
 <p>I&rsquo;ll cover my solving of the Day 2 challenges somewhere in the upcoming days.</p>
 
 		</section>
