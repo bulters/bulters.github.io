@@ -8,6 +8,19 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 20 Nov 2020 21:20:48 +0100</lastBuildDate><atom:link href="https://www.bulters.dev/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>About</title>
+      <link>https://www.bulters.dev/about/</link>
+      <pubDate>Mon, 23 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.bulters.dev/about/</guid>
+      <description>Hi!
+I&amp;rsquo;m a dad of three, husband, entrepreneur and generic nerd. I&amp;rsquo;m based on The Netherlands (Obdam).
+This site is here for me to publish random stuff.
+If you read anything here, and would like to get in touch, please send an email to jeroen at nrds.nl or reach out to me on Keybase.
+&amp;ndash; Jeroen</description>
+    </item>
+    
+    <item>
       <title>Where We Build a Computer</title>
       <link>https://www.bulters.dev/posts/where-we-build-a-computer/</link>
       <pubDate>Fri, 20 Nov 2020 21:20:48 +0100</pubDate>
