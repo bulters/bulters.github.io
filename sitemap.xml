@@ -3,17 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://www.bulters.dev/posts/t-minus-16/</loc>
-    <lastmod>2020-11-15T00:04:41+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://www.bulters.dev/</loc>
-    <lastmod>2020-11-15T00:04:41+01:00</lastmod>
+    <lastmod>2020-11-20T21:20:48+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://www.bulters.dev/posts/</loc>
+    <lastmod>2020-11-20T21:20:48+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.bulters.dev/posts/where-we-build-a-computer/</loc>
+    <lastmod>2020-11-20T21:20:48+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.bulters.dev/posts/t-minus-16/</loc>
     <lastmod>2020-11-15T00:04:41+01:00</lastmod>
   </url>
   

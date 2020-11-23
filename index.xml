@@ -6,7 +6,16 @@
     <description>Recent content on bulters.dev</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Nov 2020 00:04:41 +0100</lastBuildDate><atom:link href="https://www.bulters.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 20 Nov 2020 21:20:48 +0100</lastBuildDate><atom:link href="https://www.bulters.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Where We Build a Computer</title>
+      <link>https://www.bulters.dev/posts/where-we-build-a-computer/</link>
+      <pubDate>Fri, 20 Nov 2020 21:20:48 +0100</pubDate>
+      
+      <guid>https://www.bulters.dev/posts/where-we-build-a-computer/</guid>
+      <description>Advent of Code 2019, day 2 So day one went fairly smooth. Nothing too difficult to impoement, as you can expect from a first challenge. Since I&amp;rsquo;ve done some of the challenges last year (implemented them in Go), I know that there will be a rapid ramp-up in difficulty and that a number of challenges build &amp;ldquo;on top of each other&amp;rdquo;. Perfect opportunities to start exploring how to write reuseable Haskell code.</description>
+    </item>
+    
     <item>
       <title>Advent of Code in Haskell: T Minus 16</title>
       <link>https://www.bulters.dev/posts/t-minus-16/</link>

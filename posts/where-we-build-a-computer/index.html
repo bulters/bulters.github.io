@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Where We Build a Computer - bulters.dev</title><meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta property="og:description" content="" />
+	<meta name="twitter:description" content="" />
+	<meta name="description" content="" />
+	<meta name="description" content="" />
+
+	<meta property="og:title" content="Where We Build a Computer | bulters.dev" />
+	<meta name="twitter:title" content="Where We Build a Computer | bulters.dev" />
+
+	<meta property="og:image" content=""/>
+	<meta itemprop="name" content="Where We Build a Computer | bulters.dev" />
+	<meta name="application-name" content="Where We Build a Computer | bulters.dev" />
+	<meta property="og:site_name" content="" />
+	<meta property="og:title" content="Where We Build a Computer" />
+<meta property="og:description" content="Advent of Code 2019, day 2 So day one went fairly smooth. Nothing too difficult to impoement, as you can expect from a first challenge. Since I&rsquo;ve done some of the challenges last year (implemented them in Go), I know that there will be a rapid ramp-up in difficulty and that a number of challenges build &ldquo;on top of each other&rdquo;. Perfect opportunities to start exploring how to write reuseable Haskell code." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.bulters.dev/posts/where-we-build-a-computer/" />
+<meta property="article:published_time" content="2020-11-20T21:20:48+01:00" />
+<meta property="article:modified_time" content="2020-11-20T21:20:48+01:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Where We Build a Computer"/>
+<meta name="twitter:description" content="Advent of Code 2019, day 2 So day one went fairly smooth. Nothing too difficult to impoement, as you can expect from a first challenge. Since I&rsquo;ve done some of the challenges last year (implemented them in Go), I know that there will be a rapid ramp-up in difficulty and that a number of challenges build &ldquo;on top of each other&rdquo;. Perfect opportunities to start exploring how to write reuseable Haskell code."/>
+<script src="https://www.bulters.dev/js/feather.min.js"></script>
+	
+	<link href="https://www.bulters.dev/css/fonts.css" rel="stylesheet">
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.bulters.dev/css/main.css" />
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://www.bulters.dev/">bulters.dev</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">All posts</a>
+		
+		<a href="/about">About</a>
+		
+		<a href="/tags">Tags</a>
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Where We Build a Computer</h1>
+			<div class="meta">Posted on Nov 20, 2020</div>
+		</div>
+		
+
+		<section class="body">
+			<h1 id="advent-of-code-2019-day-2">Advent of Code 2019, day 2</h1>
+<p>So day one went fairly smooth. Nothing too difficult to impoement, as you can
+expect from a first challenge. Since I&rsquo;ve done some of the challenges last year
+(implemented them in Go), I know that there will be a rapid ramp-up in
+difficulty and that a number of challenges build &ldquo;on top of each other&rdquo;.
+Perfect opportunities to start exploring how to write reuseable Haskell code.</p>
+<p>But we&rsquo;ll tackle that when the opportunity actually presents itself and not
+make things more difficult than needed.</p>
+<h1 id="the-challenge-build-a-sort-of-computer">The challenge: Build a sort of computer</h1>
+<p>I will not describe the entire problem again, Advent of Code is way better at
+that. But to make things simple: read numbers from a file, start at the first
+number, execute an action based on the number and write the result of the
+action somewhere.</p>
+<p>In the first &ldquo;note&rdquo; (I wouldn&rsquo;t call these ramblings articles) I started out
+with some boilerplate by setting up the required files for Cabal, but lets not
+do that this time, since I realised we don&rsquo;t really need it (just yet).</p>
+<p>I&rsquo;ll just create a directory, create a Main.hs file and run stuff from GHCi to
+get things working. In the end I&rsquo;ll try to modify the program to take the input
+program (intcode program) from the standard input, just as a challenge.</p>
+<h1 id="stubbing-out-the-program">Stubbing out the program</h1>
+<p>Lets get our environment setup.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">jeroen@DESKTOP:~/taoc19$ cd day2
+jeroen@DESKTOP:~/taoc19/day2$ touch Main.hs
+jeroen@DESKTOP:~/taoc19/day2$ ghci
+GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? <span style="color:#66d9ef">for</span> help
+Prelude&gt; :load Main.hs
+<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span> of 1<span style="color:#f92672">]</span> Compiling Main             <span style="color:#f92672">(</span> Main.hs, interpreted <span style="color:#f92672">)</span>
+Ok, one module loaded.
+*Main&gt;
+</code></pre></div><p>Great, that worked. The <code>Main.hs</code> file is still empty, but it works, no Cabal
+or Stack needed to get something done. Now to open the editor from GHCi (with
+<code>:edit</code> or <code>:e</code>) and start implementing this intcode machine.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">*Main&gt; :e
+editor not set, use :set editor
+*Main&gt; :set editor vim
+*Main&gt;
+</code></pre></div><p>Oops, let make a mental note to actually set <code>$EDITOR</code> in my environment, guess
+I don&rsquo;t use it as often as thought.</p>
+<p>So filling the Main.hs file with the same boilerplate as last time:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">module</span> Main <span style="color:#66d9ef">where</span>
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+        raw <span style="color:#f92672">&lt;-</span> readFile <span style="color:#e6db74">&#34;input.txt&#34;</span>
+				        print raw
+</code></pre></div><p>Running the <code>main</code> function in GHCi does exactly as expected, it outputs the contents of the <code>input.txt</code> file. No big deal.</p>
+<p>So after stubbing out the general outline of the program this is what I came up with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#66d9ef">module</span> Main <span style="color:#66d9ef">where</span>
+
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">IO</span> ()
+<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+        raw <span style="color:#f92672">&lt;-</span> readFile <span style="color:#e6db74">&#34;input.txt&#34;</span>
+        <span style="color:#75715e">-- split the input up into instructions (split on ,)</span>
+        <span style="color:#66d9ef">let</span> input <span style="color:#f92672">=</span> parseInput raw
+        <span style="color:#75715e">-- run the program</span>
+        <span style="color:#66d9ef">let</span> output <span style="color:#f92672">=</span> runProgram input
+        <span style="color:#75715e">-- get the value from first position in memory</span>
+        <span style="color:#66d9ef">let</span> solution <span style="color:#f92672">=</span> output <span style="color:#f92672">!!</span> <span style="color:#ae81ff">0</span>
+        print solution
+
+<span style="color:#75715e">-- parseInput takes a string as input and outputs</span>
+<span style="color:#75715e">-- an array of integers</span>
+<span style="color:#a6e22e">parseInput</span> <span style="color:#f92672">=</span> id
+
+<span style="color:#75715e">-- runProgram takes a piece of memory and returns</span>
+<span style="color:#75715e">-- the state of memory after the program has completed</span>
+<span style="color:#a6e22e">runProgram</span> <span style="color:#f92672">=</span> id
+</code></pre></div><p>So we have two high level functions to define, sounds doable.</p>
+<p>First challenge is to find a way to split the input string on the comma&rsquo;s
+separating the individual memory values. I heard &ldquo;real Haskell programmers&rdquo; use
+<a href="https://hoogle.haskell.org">Hoogle</a> to find the functions they are looking for
+based on the type signature they think &ldquo;should get the job done&rdquo;.</p>
+<p>Since we&rsquo;re looking to split a string based on a different string, the required
+type signature should look something like <code>String -&gt; String -&gt; [String]</code>. But
+after <a href="https://hoogle.haskell.org/?hoogle=String+-%3E+String+-%3E+%5BString%5D&amp;scope=set%3Ahaskell-platform">searching Hoogle for
+it</a> I couldn&rsquo;t find anything that looks like it might do the job. Of course I could
+have just searched for a function called split, or some variation of it, but I wanted
+to do it &ldquo;the real way&quot;TM. Luckily, after reading an article on <a href="https://mmhaskell.com/blog/2017/5/15/untangling-haskells-strings">Monday Morning Haskell</a>
+I remembered that Haskell also has a <code>Text</code> type, offering some additional string handling
+abilities.</p>
+
+<div class="callout" style="">
+	<div class="callout-inner">
+    💡 I remain blisfully unaware of other benefits of using the `Text` type, please enlighten me if you want to.
+  </div>
+</div>
+<p>Re-running the search with <a href="https://hoogle.haskell.org/?hoogle=Text+-%3E+Text+-%3E+%5BText%5D&amp;scope=set%3Ahaskell-platform"><code>Text -&gt; Text -&gt; [Text]</code></a> yielded exactly the result I was looking for: <code>splitOn</code>. So feeding the <code>raw</code> data into <code>splitOn</code> and splitting on <code>,</code> gives us a <code>[String]</code> which we only need to convert into a <code>[Int]</code>. The <code>splitOn</code> function is included in the <code>Data.Text</code> package, so we&rsquo;ll have to import that as well. But then, the <code>readFile</code> we use to load the data gives us a <code>String</code>, so we&rsquo;ll have to import <code>Data.Text.IO</code> as well to be able to utilize the <code>readFile</code> function from that (all found by using Hoogle).</p>
+<p>At this point, let&rsquo;s reconsider our solution of using the <code>splitOn</code> function as provided by <code>Data.Text</code> and research Hoogle for a different <code>splitOn</code> function. Turns out, there is a <code>splitOn</code> variant in <a href="https://hackage.haskell.org/package/split-0.2.3.4/docs/Data-List-Split.html#v:splitOn"><code>Data.List.Split</code></a> that is generic (i.e. it accepts anything of the type <code>Eq a =&gt; [a] -&gt; [a] -&gt; [[a]]</code>) so will probably accept a <code>String</code> as well. Let&rsquo;s try it out in GHCi.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? <span style="color:#66d9ef">for</span> help
+Prelude&gt; :m + Data.List.Split
+Prelude Data.List.Split&gt; splitOn <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#e6db74">&#34;1,2,3,4,5&#34;</span>
+<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;1&#34;</span>,<span style="color:#e6db74">&#34;2&#34;</span>,<span style="color:#e6db74">&#34;3&#34;</span>,<span style="color:#e6db74">&#34;4&#34;</span>,<span style="color:#e6db74">&#34;5&#34;</span><span style="color:#f92672">]</span>
+Prelude Data.List.Split&gt; :t splitOn <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#e6db74">&#34;1,2,3,4,5&#34;</span>
+splitOn <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#e6db74">&#34;1,2,3,4,5&#34;</span> :: <span style="color:#f92672">[[</span>Char<span style="color:#f92672">]]</span>
+</code></pre></div><p>Awesome, we get something back that looks like a <code>[String]</code> (since a <code>String</code> is a <code>[Char]</code>). So we&rsquo;ll be good to go to use this.</p>
+<p>So let&rsquo;s write a simple function to do this, iterate (<code>map</code>) over all the individual items and <code>read</code> them into a <code>[Int]</code>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">-- parseInput takes a string as input and outputs</span>
+<span style="color:#75715e">-- an array of integers</span>
+<span style="color:#75715e">-- parseInput :: String -&gt; [Int]</span>
+<span style="color:#a6e22e">parseInput</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">String</span> <span style="color:#f92672">-&gt;</span> [<span style="color:#66d9ef">Int</span>]
+<span style="color:#a6e22e">parseInput</span> x <span style="color:#f92672">=</span> map read <span style="color:#f92672">$</span> splitOn <span style="color:#e6db74">&#34;,&#34;</span> x
+</code></pre></div><p>That takes care of getting our input ready. The second step involves a small nuance in the challenge:</p>
+<pre><code>    Once you have a working computer, the first step is to restore the gravity
+    assist program (your puzzle input) to the &quot;1202 program alarm&quot; state it had
+    just before the last computer caught fire. To do this, before running the
+    program, replace position 1 with the value 12 and replace position 2 with the
+    value 2. What value is left at position 0 after the program halts?
+</code></pre>
+<p>So we have to set the first value of the program to 12, and the second value to 2. This calls for a function
+to replace a certain index in a <code>List</code>. At this point we could choose to replace the usage of <code>List</code> with <code>Data.Vector</code> which
+offers this functionality by default. But for simplicity sake, let&rsquo;s stay with our current solution and create a <code>replace</code> function
+that takes an <code>Int</code> (the index), another <code>Int</code> (the new value) and a <code>List</code>, and returns a <code>List</code>. To build this function we use the <code>splitAt</code> function
+provided by <code>Data.List.Split</code>, which we imported in the previous step anyway.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#a6e22e">replace</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Int</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Int</span> <span style="color:#f92672">-&gt;</span> [<span style="color:#66d9ef">Int</span>] <span style="color:#f92672">-&gt;</span> [<span style="color:#66d9ef">Int</span>]
+<span style="color:#a6e22e">replace</span> i v xs <span style="color:#f92672">=</span> <span style="color:#66d9ef">let</span> (hxs, <span style="color:#66d9ef">_</span><span style="color:#66d9ef">:</span>txs) <span style="color:#f92672">=</span> splitAt i xs <span style="color:#66d9ef">in</span>
+								   hxs <span style="color:#f92672">++</span> v <span style="color:#66d9ef">:</span> txs
+</code></pre></div><p>which, when tested in GHCi, yields exactly what we want:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span><span style="color:#ae81ff">1</span> of 1<span style="color:#f92672">]</span> Compiling Main             <span style="color:#f92672">(</span> Main.hs, interpreted <span style="color:#f92672">)</span>
+Ok, one module loaded.
+*Main&gt; replace <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">99</span> <span style="color:#f92672">[</span>1,2,3,4,5<span style="color:#f92672">]</span>
+<span style="color:#f92672">[</span>1,2,99,4,5<span style="color:#f92672">]</span>
+</code></pre></div><p>So we can construct our actual program with <code>replace 1 12 $ replace 2 2 input</code>, store it in a variable and use that to run the actual program.</p>
+
+<div class="callout" style="">
+	<div class="callout-inner">
+    💡 Turns out, `Data.List.Index` has a function called `setAt` which does EXACTLY the same as our `replace` function. Unfortunately, this is only available as an external library, so I choose not to use it.
+  </div>
+</div>
+<h1 id="now-things-get-interesting">Now things get interesting</h1>
+<p>We have a list of numbers, which somehow translates to instructions to be executed by a virtual computer, mutating memory. Sounds easy right?</p>
+<p>IMO, this is actually the easy part, it involves us creating a function that takes 4 numbers from the list, applying a certain mutation to memory based on the values in those four numbers, taking the next four numbers, etc. Untill we find the number 99.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#a6e22e">runProgramAt</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Int</span> <span style="color:#f92672">-&gt;</span> [<span style="color:#66d9ef">Int</span>] <span style="color:#f92672">-&gt;</span> [<span style="color:#66d9ef">Int</span>]
+<span style="color:#a6e22e">runProgramAt</span> pc m <span style="color:#f92672">=</span> <span style="color:#66d9ef">let</span> opcode <span style="color:#f92672">=</span> m <span style="color:#f92672">!!</span> pc
+												left <span style="color:#f92672">=</span> m <span style="color:#f92672">!!</span> (m <span style="color:#f92672">!!</span> (pc <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))
+												right <span style="color:#f92672">=</span> m <span style="color:#f92672">!!</span> (m <span style="color:#f92672">!!</span> (pc <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>))
+												result <span style="color:#f92672">=</span> m <span style="color:#f92672">!!</span> (pc <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>)
+												next <span style="color:#f92672">=</span> pc <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span> <span style="color:#66d9ef">in</span>
+										<span style="color:#66d9ef">case</span> opcode <span style="color:#66d9ef">of</span>
+												<span style="color:#75715e">-- 99 signals the end of the program, just return</span>
+												<span style="color:#75715e">-- the entire memory</span>
+												<span style="color:#ae81ff">99</span> <span style="color:#f92672">-&gt;</span> m
+												<span style="color:#75715e">-- 1 indicates addition (left + right -&gt; result), continue</span>
+												<span style="color:#75715e">-- with the next operation at pc + 4</span>
+												<span style="color:#ae81ff">1</span> <span style="color:#f92672">-&gt;</span> runProgramAt next <span style="color:#f92672">$</span> replace result (left <span style="color:#f92672">+</span> right) m
+												<span style="color:#75715e">-- 2 indicates multiplication (left * right -&gt; result), continue</span>
+												<span style="color:#75715e">-- with the next operation at pc + 4</span>
+												<span style="color:#ae81ff">2</span> <span style="color:#f92672">-&gt;</span> runProgramAt next <span style="color:#f92672">$</span> replace result (left <span style="color:#f92672">*</span> right) m
+												<span style="color:#75715e">-- and to satisfy the compiler, give it a fallback case</span>
+												<span style="color:#75715e">-- which just returns the entire memory and stops</span>
+												otherwise <span style="color:#f92672">-&gt;</span> m
+</code></pre></div><p>Now when I change my <code>runProgram</code> function to use this function to run the program starting at position 0 by changing it into
+<code>runProgram = runProgramAt 0</code>, and running this from GHCi I get my correct answer:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">*Main&gt; main
+<span style="color:#ae81ff">3101844</span>
+</code></pre></div><h1 id="finding-a-certain-solution">Finding a certain solution</h1>
+<p>Really typical, part 2 of the challenge involves us finding a set of input that yields a certain output. This reeks like a standard brute-force search. These can be done really efficiently in Haskell by using <a href="https://dev.to/awwsmm/relearn-you-a-haskell-part-2-list-comprehensions-tuples-and-types-g29">list comprehensions</a>. So probably we&rsquo;ll end up with something like:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#a6e22e">findSolution</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Int</span> <span style="color:#f92672">-&gt;</span> [<span style="color:#66d9ef">Int</span>] <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Int</span>
+<span style="color:#a6e22e">findSolution</span> s m <span style="color:#f92672">=</span> head [noun <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">+</span> verb <span style="color:#f92672">|</span> 
+                    noun <span style="color:#f92672">&lt;-</span> [<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">99</span>], 
+                    verb <span style="color:#f92672">&lt;-</span> [<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">99</span>], 
+                    runProgram (replace <span style="color:#ae81ff">1</span> noun <span style="color:#f92672">$</span> replace <span style="color:#ae81ff">2</span> verb m) <span style="color:#f92672">!!</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">==</span> s]
+
+</code></pre></div><p>When calling this function with the input supplied by the challenge:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#75715e">-- get the required input to complete part 2</span>
+<span style="color:#66d9ef">let</span> nounverb <span style="color:#f92672">=</span> findSolution <span style="color:#ae81ff">19690720</span> input
+<span style="color:#a6e22e">print</span> nounverb
+</code></pre></div><p>it yields the correct solution, right away:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span><span style="color:#ae81ff">1</span> of 1<span style="color:#f92672">]</span> Compiling Main             <span style="color:#f92672">(</span> Main.hs, interpreted <span style="color:#f92672">)</span>
+Ok, one module loaded.
+*Main&gt; main
+<span style="color:#ae81ff">3101844</span>
+<span style="color:#ae81ff">8478</span>
+</code></pre></div><p>where the second answer is the answer for part 2. Given that I ran this in GHCi I expected it to be a bit slower, so let&rsquo;s see if that&rsquo;s the case:</p>
+<pre><code>*Main&gt; :set +s
+*Main&gt; main
+3101844
+8478
+(1.04 secs, 3,337,885,928 bytes)
+*Main&gt;
+</code></pre><p>That seems about right, let&rsquo;s try compiling and timing this as a standalone binary:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">jeroen@DESKTOP:~/taoc19/day2$ ghc Main.hs
+<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span> of 1<span style="color:#f92672">]</span> Compiling Main             <span style="color:#f92672">(</span> Main.hs, Main.o <span style="color:#f92672">)</span>
+Linking Main ...
+jeroen@DESKTOP:~/taoc19/day2$ time ./Main
+<span style="color:#ae81ff">3101844</span>
+<span style="color:#ae81ff">8478</span>
+
+real    0m0.567s
+user    0m0.567s
+sys     0m0.000s
+</code></pre></div><p>That&rsquo;s actually quite an improvement, and more than acceptable for a brute-force solution ;-)</p>
+<h1 id="todo-list">Todo list</h1>
+<p>Let&rsquo;s call it a day for challenge number 2. Since the challenge tells us we&rsquo;ve got to keep the IntCode computer stored
+away for later challenges, we&rsquo;ll look at re-using what&rsquo;s already there in the next challenge when we need to IntCode
+computer.</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+<hr><a class="soc" href="https://github.com/bulters" title="GitHub"><i data-feather="github"></i></a>|<a class="soc" href="https://twitter.com/bulters/" title="Twitter"><i data-feather="twitter"></i></a>|⚡️
+	2020  <a href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+</footer>
+
+
+<script>
+      feather.replace()
+</script></div>
+    </body>
+</html>
